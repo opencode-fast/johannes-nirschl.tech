@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maker Space | Portfolio</title>
+  <meta name="description" content="Nothing.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="grid-background"></div>
+
+  <nav class="navbar">
+    <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">johannes-nirschl<span class="tech-domain">.tech</span></a></div>
+    <div class="nav-links">
+      <a href="about.html">About</a>
+      <a href="index.html#projects">Log</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <header class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">I am Johannes Nirschl.<br>You can excite me for everything.<br>I really mean anything...</h1>
+      <p class="hero-subtitle">A digital project log for my ideas, prototypes, and finished builds.</p>
+    </div>
+  </header>
+
+  <main class="content-wrapper">
+    
+    <section id="projects" class="projects-section">
+      <div class="section-header">
+        <h2 class="section-heading">Project Log</h2>
+      </div>
+      
+      <div class="project-grid">
+        
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot online"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="torusKnot" data-wireframe-overlay="true" style="background-image: none; background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>Rocket Hub</h3>
+            <p>A comprehensive hardware and software ecosystem bridging local IoT and cloud AI, built for Jugend Forscht 2026.</p>
+            <div class="tags">
+              <span>HARDWARE</span>
+              <span>AI</span>
+              <span>FLUTTER</span>
+            </div>
+            <a href="project-rockethub.html" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+        
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot online"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="dodecahedron" data-wireframe="true" style="background-image: none; background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>Projekt Imitator</h3>
+            <p>A data engineering and machine learning initiative curating JSONL datasets for supervised fine-tuning of LLMs.</p>
+            <div class="tags">
+              <span>MACHINE LEARNING</span>
+              <span>DATA</span>
+            </div>
+            <a href="project-imitator.html" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot online"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="octahedron" data-wireframe="true" style="background-image: none; background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>MCP Ecosystem</h3>
+            <p>Custom Model Context Protocol servers exposing Safari, Obsidian, and Fusion 360 directly to autonomous AI agents.</p>
+            <div class="tags">
+              <span>AI AGENTS</span>
+              <span>APIS</span>
+            </div>
+            <a href="project-mcp.html" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot offline"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="chip" data-wireframe-overlay="true" style="background-image: none; background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>Chips@School</h3>
+            <p>Custom PCB designs and hardware schematics built in KiCad to demystify semiconductor logic for education.</p>
+            <div class="tags">
+              <span>PCB DESIGN</span>
+              <span>KICAD</span>
+            </div>
+            <a href="project-chips.html" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot online"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="database" data-wireframe-overlay="true" style="background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>KV Cache DB</h3>
+            <p>A high-performance, low-latency key-value store specifically designed to cache attention mechanism states for LLMs.</p>
+            <div class="tags">
+              <span>DATABASE</span>
+              <span>RUST</span>
+            </div>
+            <a href="project-kvcache.html" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot offline"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="gridBox" data-wireframe="true" style="background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>Gridfinity Parametrics</h3>
+            <p>Custom OpenSCAD scripts to procedurally generate 3D printable workshop organization systems.</p>
+            <div class="tags">
+              <span>3D PRINTING</span>
+              <span>PARAMETRIC</span>
+            </div>
+            <a href="project-gridfinity.html" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot online"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="icosahedron" data-wireframe-overlay="true" style="background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>Arduino Kinematics</h3>
+            <p>Bare-metal C++ programming for an Arduino-based inverse kinematics engine driving a robotic arm.</p>
+            <div class="tags">
+              <span>ROBOTICS</span>
+              <span>C++</span>
+            </div>
+            <a href="project-robotics.html" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <!-- 20 -->
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot online"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="tetrahedron" data-wireframe-overlay="true" style="background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>LMU GitHub Repos</h3>
+            <p>Collection of collaborative software engineering projects and algorithms developed for university coursework.</p>
+            <div class="tags">
+              <span>SOFTWARE</span>
+              <span>ALGORITHMS</span>
+            </div>
+            <a href="#" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <!-- 21 -->
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot online"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="flatTorus" data-wireframe-overlay="true" style="background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>J Squared</h3>
+            <p>Brand identity, web design, and digital infrastructure for an upcoming technical consultancy concept.</p>
+            <div class="tags">
+              <span>DESIGN</span>
+              <span>BRANDING</span>
+            </div>
+            <a href="#" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <!-- 22 -->
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot online"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="box" data-wireframe="true" style="background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>Advanced KiCad Layouts</h3>
+            <p>High-frequency routing and impedance-controlled PCB designs for custom digital logic circuits.</p>
+            <div class="tags">
+              <span>PCB DESIGN</span>
+              <span>HARDWARE</span>
+            </div>
+            <a href="#" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <!-- 26 -->
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot online"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="twistedKnot" data-wireframe="true" style="background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>Putzbrunn Documentation</h3>
+            <p>Digital archiving and technical documentation pipeline for the Putzbrunn community project.</p>
+            <div class="tags">
+              <span>DOCUMENTATION</span>
+              <span>ARCHIVE</span>
+            </div>
+            <a href="#" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <!-- 27 -->
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot offline"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="cone" data-wireframe="true" style="background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>Scratchpad Scripts</h3>
+            <p>A repository of "random bs"—rapid prototyping scripts in Python, Bash, and Node for automating daily tasks.</p>
+            <div class="tags">
+              <span>AUTOMATION</span>
+              <span>BASH</span>
+            </div>
+            <a href="#" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <!-- 28 -->
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot online"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="capsule" data-wireframe-overlay="true" style="background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>UTUM MakerSpace Integrations</h3>
+            <p>Documentation and physical tooling designed specifically for use within the UnternehmerTUM MakerSpace.</p>
+            <div class="tags">
+              <span>FABRICATION</span>
+              <span>COMMUNITY</span>
+            </div>
+            <a href="#" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <!-- 29 -->
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot online"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="octahedron" data-wireframe-overlay="true" style="background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>Alex's Game</h3>
+            <p>A custom indie game prototype developed in a modern game engine, focusing on unique movement mechanics.</p>
+            <div class="tags">
+              <span>GAME DEV</span>
+              <span>C#</span>
+            </div>
+            <a href="#" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <!-- 30 -->
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot online"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="dodecahedron" data-wireframe="true" style="background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>CLI GitHub Toolkit</h3>
+            <p>Command-line interface tools specifically written to streamline git workflows and pull request testing.</p>
+            <div class="tags">
+              <span>TOOLING</span>
+              <span>CLI</span>
+            </div>
+            <a href="#" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <!-- 31 -->
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot online"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="wildKnot" data-wireframe-overlay="true" style="background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>Open Code Opus</h3>
+            <p>Open-source integrations and testing frameworks for evaluating the coding capabilities of Claude 3 Opus.</p>
+            <div class="tags">
+              <span>LLM</span>
+              <span>TESTING</span>
+            </div>
+            <a href="#" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+        <!-- 32 -->
+        <article class="project-card scroll-reveal">
+          <div class="card-header">
+            <span class="status-dot offline"></span>
+          </div>
+          <div class="project-img shape-container" data-shape="cylinder" data-wireframe-overlay="true" style="background-color: rgba(63, 94, 81, 0.1); cursor: pointer;"></div>
+          <div class="project-content">
+            <h3>Digital Fabrication Gifts</h3>
+            <p>Custom parametric designs and 3D printed objects specifically engineered as personalized holiday gifts.</p>
+            <div class="tags">
+              <span>FABRICATION</span>
+              <span>DESIGN</span>
+            </div>
+            <a href="#" class="btn-outline">View Details &rarr;</a>
+          </div>
+        </article>
+
+      </div>
+      <div class="more-projects-indicator scroll-reveal">
+        <p>More Projects Incoming</p>
+        <div class="chevron-down"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="logo"><a href="index.html" style="text-decoration:none; color:inherit;">johannes-nirschl<span class="tech-domain">.tech</span></a></div>
+      <div class="footer-links">
+        <a href="https://github.com/jojo20000-basic" target="_blank" rel="noopener">Github</a>
+        <a href="https://www.linkedin.com/in/johannes-nirschl-5ba718391" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="copyright.html">Copyright</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
