@@ -11,8 +11,9 @@ app.use((req, res, next) => {
     next();
 });
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve the Godot web export from this directory (Godot exports directly
+// here per export_presets.cfg: export_path="web_host/index.html").
+app.use(express.static(__dirname));
 
 app.listen(PORT, () => {
     console.log(`Godot Web Server running on port ${PORT}`);
