@@ -258,9 +258,15 @@ function analyze(now) {
 async function start() {
   if (running) return;
   el.start.disabled = true;
+  el.overlayMsg.textContent = "Requesting camera…";
+  el.overlayMsg.classList.remove("hidden");
   try {
-    if (!faceLandmarker) await initModel();
+    // Request the camera FIRST — synchronously within the click gesture.
+    // Safari revokes the user-activation once you await a long task (the model
+    // download), and then silently refuses to show the camera prompt.
     if (!stream) await startCamera();
+    setStatus("Loading face-tracking model…");
+    if (!faceLandmarker) await initModel();
     if (!charts) charts = createCharts();
 
     buffer = []; prevLm = null; recentBpm = []; lastTs = 0; lastAnalysis = 0;
@@ -272,7 +278,13 @@ async function start() {
     requestAnimationFrame(loop);
   } catch (err) {
     console.error(err);
-    setStatus("Error: " + (err && err.message ? err.message : err) + " — camera needs HTTPS or localhost.", "bad");
+    let msg = err && err.message ? err.message : String(err);
+    if (err && (err.name === "NotAllowedError" || err.name === "SecurityError"))
+      msg = "Camera permission was blocked. In Safari: aA icon in the address bar → Website Settings → Camera → Allow, then reload.";
+    else if (err && err.name === "NotFoundError")
+      msg = "No camera was found on this device.";
+    setStatus("Error: " + msg, "bad");
+    el.overlayMsg.textContent = "Camera off";
     el.start.disabled = false;
   }
 }
