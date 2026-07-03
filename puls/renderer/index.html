@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rPPG · Camera Pulse Estimation</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+  <!-- Chart.js (UMD global) for the data graphs — bundled locally -->
+  <script src="./vendor/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="pulse-dot"></span>
+      <h1>rPPG&nbsp;<small>· remote photoplethysmography</small></h1>
+    </div>
+    <div class="disclaimer" role="note">
+      ⚕ Not a medical device. Estimates only — do not use for diagnosis or treatment.
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- Left: camera + result -->
+    <section class="panel camera-panel">
+      <div class="video-wrap">
+        <canvas id="displayCanvas"></canvas>
+        <video id="video" playsinline muted autoplay></video>
+        <canvas id="procCanvas" class="hidden"></canvas>
+        <div id="videoOverlayMsg" class="video-msg">Camera off</div>
+      </div>
+
+      <div class="controls">
+        <button id="startBtn" class="btn primary">Start measuring</button>
+        <button id="stopBtn" class="btn" disabled>Stop</button>
+        <label class="cam-select">
+          Camera
+          <select id="cameraSelect"></select>
+        </label>
+      </div>
+
+      <div class="result-card">
+        <div class="bpm-block">
+          <span id="bpmValue" class="bpm">--</span>
+          <span class="bpm-unit">BPM</span>
+        </div>
+        <div class="result-meta">
+          <div class="meta-row">
+            <span>Averaged over</span>
+            <div class="progress"><div id="windowProgress" class="progress-bar"></div></div>
+            <span id="windowLabel">0 / 20 s</span>
+          </div>
+          <div class="meta-grid">
+            <div><label>Confidence</label><span id="confValue">--</span></div>
+            <div><label>Stability (±)</label><span id="stabilityValue">--</span></div>
+            <div><label>Signal SNR</label><span id="snrValue">--</span></div>
+            <div><label>Frame rate</label><span id="fpsValue">--</span></div>
+            <div><label>Valid frames</label><span id="framesValue">--</span></div>
+            <div><label>Face</label><span id="faceValue">--</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="statusText" class="status">Grant camera access and press “Start measuring”.</div>
+    </section>
+
+    <!-- Right: all the graphs -->
+    <section class="panel charts-panel">
+      <div class="chart-grid">
+        <figure class="chart-card wide">
+          <figcaption>rPPG pulse waveform <small>(POS, band-passed 0.7–4 Hz)</small></figcaption>
+          <canvas id="pulseChart"></canvas>
+        </figure>
+        <figure class="chart-card">
+          <figcaption>Heart-rate spectrum <small>(peak = result)</small></figcaption>
+          <canvas id="spectrumChart"></canvas>
+        </figure>
+        <figure class="chart-card">
+          <figcaption>Raw skin colour <small>(forehead R/G/B — shows lighting)</small></figcaption>
+          <canvas id="rgbChart"></canvas>
+        </figure>
+        <figure class="chart-card">
+          <figcaption>Head pose <small>(yaw / pitch / roll °)</small></figcaption>
+          <canvas id="poseChart"></canvas>
+        </figure>
+        <figure class="chart-card">
+          <figcaption>Illumination <small>(mean ROI brightness)</small></figcaption>
+          <canvas id="lightChart"></canvas>
+        </figure>
+        <figure class="chart-card">
+          <figcaption>Motion &amp; quality <small>(confounders)</small></figcaption>
+          <canvas id="motionChart"></canvas>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    Runs entirely in your browser · no video leaves this device · POS algorithm (Wang et al. 2017) + MediaPipe FaceLandmarker
+  </footer>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

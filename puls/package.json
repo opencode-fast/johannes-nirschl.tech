@@ -1,0 +1,36 @@
+{
+  "name": "pulse-rppg",
+  "productName": "Pulse",
+  "version": "1.0.0",
+  "description": "Camera-based heart-rate estimation (rPPG) for macOS.",
+  "author": "Johannes Nirschl",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --mac dmg"
+  },
+  "build": {
+    "appId": "tech.johannes-nirschl.pulse",
+    "productName": "Pulse",
+    "compression": "maximum",
+    "electronLanguages": ["en-US"],
+    "directories": { "output": "release", "buildResources": "build" },
+    "files": ["main.js", "preload.js", "renderer/**/*", "!**/*.map"],
+    "mac": {
+      "target": [{ "target": "dmg", "arch": ["universal"] }],
+      "category": "public.app-category.healthcare-fitness",
+      "identity": null,
+      "extendInfo": {
+        "NSCameraUsageDescription": "Pulse uses the camera to estimate your heart rate from subtle skin-colour changes. Video never leaves your device."
+      }
+    },
+    "dmg": { "title": "Install Pulse" }
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8",
+    "@mediapipe/tasks-vision": "^0.10.22",
+    "chart.js": "^4.4.1"
+  }
+}
