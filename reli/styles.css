@@ -227,11 +227,14 @@ main {
     text-align: left;
     z-index: 1;
     cursor: pointer;
-    transition: box-shadow 0.2s var(--ease), border-color 0.2s var(--ease);
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.9s var(--ease), transform 0.9s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease);
 }
 
-.bubble:hover {
-    box-shadow: 4px 4px 0px rgba(10, 10, 10, 0.15);
+@media (hover: hover) {
+    .bubble:hover {
+        box-shadow: 4px 4px 0px rgba(10, 10, 10, 0.15);
+    }
 }
 
 .bubble blockquote {
