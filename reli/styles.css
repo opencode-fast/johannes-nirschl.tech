@@ -134,7 +134,7 @@ main {
 
 /* ─── Hero ───────────────────────────────── */
 .hero {
-    padding: 4rem 0 5rem;
+    padding: 2.5rem 0 3rem;
     text-align: center;
 }
 
@@ -146,7 +146,7 @@ main {
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem;
 }
 
 .eyebrow { color: var(--ink); font-weight: 500; }
@@ -167,11 +167,11 @@ main {
     font-style: italic;
     font-size: clamp(1.05rem, 1.6vw, 1.3rem);
     color: var(--muted);
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
 }
 
 .scroll-hint {
-    margin-top: 3rem;
+    margin-top: 1.75rem;
     font-size: 0.7rem;
     letter-spacing: 0.22em;
     text-transform: uppercase;
@@ -192,9 +192,9 @@ main {
 .canvas {
     position: relative;
     width: 100%;
-    max-width: 1100px;
+    max-width: 1040px;
     margin: 0 auto;
-    aspect-ratio: 16 / 11;
+    aspect-ratio: 16 / 9;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -202,7 +202,7 @@ main {
 
 .portrait {
     position: relative;
-    width: 24%;
+    width: 30%;
     aspect-ratio: 1 / 1;
     background: #ddd;
     overflow: hidden;
@@ -291,7 +291,7 @@ main {
 
 /* ─── Sections (continuous flow) ─────────── */
 .section {
-    padding: 9rem 0;
+    padding: 5rem 0;
     position: relative;
 }
 
@@ -304,7 +304,7 @@ main {
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .section-num {
@@ -332,7 +332,7 @@ main {
     font-size: clamp(2.5rem, 5.5vw, 4.5rem);
     line-height: 1.05;
     letter-spacing: -0.015em;
-    margin-bottom: 3.5rem;
+    margin-bottom: 2rem;
     max-width: 880px;
 }
 
@@ -346,7 +346,7 @@ main {
 .person-grid {
     display: grid;
     grid-template-columns: 1fr 1.1fr;
-    gap: 5rem;
+    gap: 3rem;
     align-items: start;
     max-width: 980px;
 }
@@ -412,7 +412,7 @@ main {
     display: grid;
     grid-template-columns: 5rem 1fr;
     gap: 2rem;
-    padding: 2.25rem 0;
+    padding: 1.4rem 0;
     border-top: 1px solid var(--hair);
 }
 
@@ -446,7 +446,7 @@ main {
 .section--invert {
     background: var(--ink);
     color: var(--paper);
-    padding: 9rem 2rem;
+    padding: 5rem 2rem;
     margin: 0 calc(50% - 50vw);
     padding-left: max(2rem, calc((100vw - var(--max)) / 2 + 2rem));
     padding-right: max(2rem, calc((100vw - var(--max)) / 2 + 2rem));
@@ -455,7 +455,7 @@ main {
 .bewertung-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 2.5rem;
+    gap: 2rem;
     max-width: var(--max);
 }
 
@@ -499,19 +499,6 @@ main {
     font-size: 0.95rem;
     line-height: 1.6;
     color: rgba(250, 250, 247, 0.85);
-}
-
-/* ─── Footer ─────────────────────────────── */
-.site-footer {
-    max-width: var(--max);
-    margin: 0 auto;
-    padding: 3rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
 }
 
 /* ─── Responsive ─────────────────────────── */
@@ -580,9 +567,9 @@ main {
         gap: 0.5rem;
     }
 
-    .section { padding: 5rem 0; }
+    .section { padding: 3.5rem 0; }
 
-    .section-h { margin-bottom: 2rem; }
+    .section-h { margin-bottom: 1.75rem; }
 
     .bio {
         grid-template-columns: 1fr;
@@ -599,19 +586,11 @@ main {
     .thesen h4 { font-size: 1.45rem; }
 
     .section--invert {
-        padding: 5rem 1.25rem;
+        padding: 3.5rem 1.25rem;
     }
 
     .bewertung-grid {
         grid-template-columns: 1fr;
     }
     .bewertung-block:first-child { grid-column: 1; }
-
-    .site-footer {
-        flex-direction: column;
-        gap: 0.5rem;
-        text-align: center;
-        align-items: center;
-        padding: 2rem 1.25rem;
-    }
 }
