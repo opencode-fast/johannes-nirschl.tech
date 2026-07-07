@@ -46,4 +46,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+    /* Bubble Popup Logic */
+    const popupOverlay = document.getElementById('bubble-popup');
+    const popupText = document.getElementById('popup-text');
+    const popupClose = document.querySelector('.popup-close');
+    
+    if (popupOverlay && popupText && popupClose) {
+        document.querySelectorAll('.bubble').forEach(bubble => {
+            bubble.addEventListener('click', () => {
+                if (bubble.dataset.meaning) {
+                    popupText.textContent = bubble.dataset.meaning;
+                    popupOverlay.setAttribute('aria-hidden', 'false');
+                }
+            });
+        });
+
+        const closePopup = () => {
+            popupOverlay.setAttribute('aria-hidden', 'true');
+        };
+
+        popupClose.addEventListener('click', closePopup);
+        
+        // Close on clicking outside the content
+        popupOverlay.addEventListener('click', (e) => {
+            if (e.target === popupOverlay) {
+                closePopup();
+            }
+        });
+        
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && popupOverlay.getAttribute('aria-hidden') === 'false') {
+                closePopup();
+            }
+        });
+    }
 });
