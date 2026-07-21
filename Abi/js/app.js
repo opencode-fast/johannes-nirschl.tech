@@ -43,7 +43,7 @@ const App = (function () {
     document.getElementById("btnFreeVideo").addEventListener("click", () => enterBooth("video"));
     document.getElementById("btnFreeBack").addEventListener("click", () => Screens.show("startScreen"));
     document.getElementById("btnBook").addEventListener("click", () => Gallery.open());
-    document.getElementById("btnBookFromBooth").addEventListener("click", () => { if (window.HeadTrack) window.HeadTrack.stop(); Camera.stop(); Gallery.open(); });
+    document.getElementById("btnBookFromBooth").addEventListener("click", () => { if (window.HeadTrack) window.HeadTrack.stop(); if (window.Effects) window.Effects.stop(); Camera.stop(); Gallery.open(); });
   }
 
   /* ---------------- Fotobox betreten ---------------- */
@@ -63,6 +63,11 @@ const App = (function () {
       hideCamError();
       // Kopf-Tracking fortsetzen, falls eine 3D-Maske aktiv ist
       if (window.HeadTrack && window.HeadTrack.ready && window.HeadTrack.isActive) window.HeadTrack.start();
+      // Effekte vorbereiten/fortsetzen
+      if (window.Effects) {
+        window.Effects.init(document.getElementById("stage"));
+        if (window.Effects.active()) window.Effects.start();
+      }
     } catch (e) {
       showCamError(e);
     }
@@ -132,6 +137,9 @@ const App = (function () {
     // Masken (3D, kopfgetrackt) — mit Fallback auf Emoji-Masken
     buildMaskRow();
 
+    // Effekte (Feuerbälle etc.)
+    buildEffectsRow();
+
     // Hintergründe
     const br = document.getElementById("bgRow");
     ABI_BACKGROUNDS.forEach((bg, i) => {
@@ -199,6 +207,27 @@ const App = (function () {
     hint.textContent = id ? "Bewege deinen Kopf — die Maske folgt dir." : "3D-Masken folgen deinem Kopf.";
   }
 
+  /* ---------------- Partikel-Effekte ---------------- */
+  function buildEffectsRow() {
+    const er = document.getElementById("effectRow");
+    if (!er || !window.Effects) return;
+    er.innerHTML = "";
+    const mk = (label, id, activeChip) => {
+      const b = document.createElement("button");
+      b.className = "chip" + (activeChip ? " active" : "");
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        window.Effects.init(document.getElementById("stage"));
+        window.Effects.set(id);
+        er.querySelectorAll(".chip").forEach((x) => x.classList.remove("active"));
+        b.classList.add("active");
+      });
+      return b;
+    };
+    er.appendChild(mk("Keine", null, true));
+    window.Effects.types.forEach((t) => er.appendChild(mk(t.name, t.id, false)));
+  }
+
   function buildEmojiMaskRow() {
     const mr = document.getElementById("maskRow");
     mr.innerHTML = "";
@@ -222,6 +251,7 @@ const App = (function () {
     document.getElementById("btnBoothBack").addEventListener("click", () => {
       if (recording) return;
       if (window.HeadTrack) window.HeadTrack.stop();
+      if (window.Effects) window.Effects.stop();
       Camera.stop();
       Screens.show("startScreen");
     });
@@ -326,6 +356,7 @@ const App = (function () {
   function showPreview(blob, type) {
     capturedBlob = blob; capturedType = type;
     if (window.HeadTrack) window.HeadTrack.stop();
+    if (window.Effects) window.Effects.stop();
     Camera.stop();
     const box = document.getElementById("previewMedia");
     const url = URL.createObjectURL(blob);

@@ -212,6 +212,13 @@ window.Camera = (function () {
       drawCover(ctx, ht.canvas, ht.canvas.width, ht.canvas.height, dx, dy, dw, dh, flip);
     }
 
+    // Partikel-Effekte (Feuerbälle etc.) — über der Person, unter Rahmen.
+    // Nicht gespiegelt (symmetrisch), deckt den gesamten Bereich.
+    const ef = window.Effects;
+    if (ef && ef.active() && ef.canvas && ef.canvas.width) {
+      drawCover(ctx, ef.canvas, ef.canvas.width, ef.canvas.height, dx, dy, dw, dh, false);
+    }
+
     // Sticker (relativ zum Zielbereich)
     fx.stickers.forEach((s) => {
       const px = dx + s.x * dw, py = dy + s.y * dh;

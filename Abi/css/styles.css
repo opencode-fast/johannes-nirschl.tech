@@ -85,6 +85,7 @@ body {
 #video { width: 100%; height: 100%; object-fit: cover; display: block; }
 .bg-layer, .sticker-layer, .flash { position: absolute; inset: 0; }
 #htCanvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; pointer-events: none; }
+#fxCanvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; pointer-events: none; }
 .bg-layer { pointer-events: none; background-repeat: no-repeat; background-position: center; z-index: 2; }
 .sticker-layer { pointer-events: none; z-index: 3; }
 .sticker {

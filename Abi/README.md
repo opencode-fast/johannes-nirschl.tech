@@ -13,10 +13,21 @@ Minimalistisches **Schwarz-Weiß-Design**.
   - **Freier Modus** – Einzelfoto **oder** Video.
 - **30 Filter** (alle Abi-Themed) + **Sticker**, **3D-Masken** und **Rahmen**:
   - **3D-Masken mit Kopf-Tracking** – ein Doktorhut (o.ä.), der dem Kopf folgt,
-    als würde man ihn wirklich tragen (MediaPipe Face Tracking + Three.js,
-    prozedurale Modelle, keine externen Dateien).
+    als würde man ihn wirklich tragen (MediaPipe Face Tracking + Three.js).
+    Doktorhut/Brille/Heiligenschein sind prozedural; die **Krone** ist ein
+    echtes 3D-Modell aus `assets/crown.stl` (eigener Binär-STL-Parser, wird
+    aufgerichtet, zentriert & auf Kopfgröße normiert).
+  - **Mehrere Personen gleichzeitig** – bis zu 5 Köpfe im Bild bekommen je eine
+    eigene Maske (stabil zugeordnet, springt nicht zwischen den Gesichtern).
+  - **Baumelnde Quaste** – die Quaste ist in der Mitte (am Knopf) befestigt,
+    fällt über die Brett-Ecke und hängt frei (Verlet-Physik) – schwingt bei
+    Kopfbewegung natürlich mit.
+  - **Dezente Gold-Akzente** – nur das Abi-Gear (Quaste, Krone, Heiligenschein)
+    ist golden; der Rest bleibt bewusst schwarz-weiß (nicht überladen).
   - Sticker frei ziehen, mit zwei Fingern skalieren & drehen.
-  - Filter/3D-Maske/Sticker/Rahmen werden fest ins Foto **und** ins Video eingebrannt.
+  - **Effekte** – **Feuerbälle** die hochschießen, **Konfetti** und **Funken**
+    (Partikel-Physik, live über der Person).
+  - Filter/3D-Maske/Sticker/Effekte/Rahmen werden fest ins Foto **und** ins Video eingebrannt.
 - **Abi Buch** – zentrale Galerie, die sich **live** aktualisiert (neue Fotos ploppen
   sofort auf allen Geräten auf). Antippen für Großansicht + Download.
 - **Kein Build-Schritt** – reines HTML/CSS/JS. Läuft von jedem Static-Host.
@@ -36,6 +47,9 @@ Minimalistisches **Schwarz-Weiß-Design**.
   - `occScale` = Größe der Verdeckungs-Hülle (größer = mehr wird hinterm Kopf
     versteckt), `occBack` = Hülle nach hinten schieben, falls die Front der
     Maske fälschlich abgeschnitten wird.
+  - **Nur Krone:** `crownScale` (Größe) und `crownLift` (Höhe) – Werte < 1 =
+    kleiner/tiefer, > 1 = größer/höher. Z.B. `HeadTrack.tune({ crownLift: 0.9 })`
+    setzt die Krone tiefer auf den Kopf.
 
 ## Schnellstart (lokal testen)
 Weil die App die Kamera nutzt, braucht sie `https` **oder** `localhost`:
@@ -67,6 +81,8 @@ js/assets.js          30 Filter, Sticker, Emoji-Masken (Fallback), Rahmen
 js/storage.js         Speicher-Schicht (Supabase ↔ localStorage-Fallback)
 js/camera.js          Kamera + Effekt-Compositing (Foto/Filmstreifen/Video)
 js/headtrack.js       3D-Masken mit Kopf-Tracking (MediaPipe + Three.js)
+js/effects.js         Partikel-Effekte (Feuerbälle, Konfetti, Funken)
+assets/crown.stl      3D-Kronen-Modell (wird für die Masken-Krone geladen)
 js/gallery.js         Abi Buch (Live-Galerie + Lightbox)
 js/app.js             Ablauf-Steuerung & UI-Verdrahtung
 SUPABASE_SETUP.md     Backend in 5 Minuten
