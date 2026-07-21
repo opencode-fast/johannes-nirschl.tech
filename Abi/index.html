@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+  <meta name="theme-color" content="#0b1f3a" />
+  <title>Abi Fotobox 🎓</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎓%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ===================== STARTMENÜ ===================== -->
+  <section id="startScreen" class="screen active">
+    <div class="hero">
+      <div class="hero-cap">🎓</div>
+      <h1>Abi Fotobox</h1>
+      <p class="hero-sub">Haltet den Moment fest — für unser Abi Buch.</p>
+    </div>
+
+    <div class="menu">
+      <button id="btnStrip" class="bigcard">
+        <span class="bc-emoji">🎞️</span>
+        <span class="bc-title">Fotostreifen</span>
+        <span class="bc-desc">4 Fotos hintereinander</span>
+      </button>
+      <button id="btnFree" class="bigcard">
+        <span class="bc-emoji">✨</span>
+        <span class="bc-title">Freier Modus</span>
+        <span class="bc-desc">Einzelfoto oder Video</span>
+      </button>
+    </div>
+
+    <button id="btnBook" class="bookbtn">📖 Zum Abi Buch</button>
+    <p id="modeNote" class="mode-note" style="display:none">
+      Lokal-Modus aktiv — Fotos werden nur auf diesem Gerät gespeichert.
+      Für zentrales Speichern: Supabase-Keys in <code>js/config.js</code> eintragen.
+    </p>
+    <footer class="foot">Abitur <span id="year">2026</span> · gemacht mit ♥</footer>
+  </section>
+
+  <!-- ===================== FREIER MODUS ===================== -->
+  <section id="freeScreen" class="screen">
+    <div class="subhead">
+      <button id="btnFreeBack" class="ghost">‹ Zurück</button>
+      <h2>Freier Modus</h2>
+      <span></span>
+    </div>
+    <div class="menu">
+      <button id="btnFreePhoto" class="bigcard">
+        <span class="bc-emoji">📷</span>
+        <span class="bc-title">Einzelfoto</span>
+        <span class="bc-desc">Ein Foto mit Effekten</span>
+      </button>
+      <button id="btnFreeVideo" class="bigcard">
+        <span class="bc-emoji">🎥</span>
+        <span class="bc-title">Video</span>
+        <span class="bc-desc">Kurzes Video aufnehmen</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================== FOTOBOX ===================== -->
+  <section id="boothScreen" class="screen">
+    <div class="booth-top">
+      <button id="btnBoothBack" class="ghost">‹</button>
+      <span id="boothTitle" class="booth-title">Foto</span>
+      <button id="btnBookFromBooth" class="ghost">📖</button>
+    </div>
+
+    <div id="stage" class="stage">
+      <video id="video" playsinline autoplay muted></video>
+      <div id="bgLayer" class="bg-layer"></div>
+      <div id="stickerLayer" class="sticker-layer"></div>
+      <div id="flash" class="flash"></div>
+      <div id="countdown" class="countdown"></div>
+      <div id="stripHint" class="strip-hint"></div>
+      <div id="recTimer" class="rec-timer"></div>
+      <div id="camError" class="cam-error">
+        <div class="cam-error-emoji">📷</div>
+        <p class="cam-error-title">Kamera konnte nicht gestartet werden</p>
+        <p class="cam-error-hint"></p>
+        <button id="btnCamRetry" class="btn btn-primary cam-error-btn">Erneut versuchen</button>
+      </div>
+    </div>
+
+    <!-- Effekt-Tabs -->
+    <div class="fxbar">
+      <div class="fxtabs">
+        <button class="fxtab active" data-panel="panelFilter">Filter</button>
+        <button class="fxtab" data-panel="panelSticker">Sticker</button>
+        <button class="fxtab" data-panel="panelMask">Masken</button>
+        <button class="fxtab" data-panel="panelBg">Rahmen</button>
+      </div>
+      <div id="panelFilter" class="fxpanel active"><div id="filterRow" class="chiprow"></div></div>
+      <div id="panelSticker" class="fxpanel">
+        <div id="stickerRow" class="chiprow"></div>
+        <p class="fxhint">Tippen zum Hinzufügen · ziehen zum Platzieren · × zum Löschen</p>
+      </div>
+      <div id="panelMask" class="fxpanel">
+        <div id="maskRow" class="chiprow"></div>
+        <p id="maskHint" class="fxhint">3D-Masken folgen deinem Kopf — wähle eine aus.</p>
+      </div>
+      <div id="panelBg" class="fxpanel"><div id="bgRow" class="chiprow"></div></div>
+    </div>
+
+    <!-- Auslöser-Leiste -->
+    <div class="booth-controls">
+      <button id="btnClearStickers" class="round-btn" title="Sticker entfernen">🧹</button>
+      <button id="shutter" class="shutter"><span id="shutterLabel" class="shutter-label">Foto</span></button>
+      <button id="btnFlip" class="round-btn" title="Kamera wechseln">🔄</button>
+    </div>
+  </section>
+
+  <!-- ===================== VORSCHAU ===================== -->
+  <section id="previewScreen" class="screen">
+    <div class="subhead">
+      <h2>Sieht gut aus?</h2>
+    </div>
+    <div id="previewMedia" class="preview-media"></div>
+    <div class="save-row">
+      <input id="authorInput" class="name-input" type="text" placeholder="Dein Name (optional)" maxlength="40" />
+      <p id="saveHint" class="save-hint"></p>
+    </div>
+    <div class="preview-actions">
+      <button id="btnRetake" class="btn btn-ghost">↺ Nochmal</button>
+      <button id="btnDownload" class="btn btn-ghost">⬇︎ Speichern</button>
+      <button id="btnSave" class="btn btn-primary">🎓 Ins Abi Buch</button>
+    </div>
+  </section>
+
+  <!-- ===================== FERTIG ===================== -->
+  <section id="doneScreen" class="screen">
+    <div class="done-wrap">
+      <div class="done-emoji">🎉</div>
+      <h2>Gespeichert!</h2>
+      <p>Dein Beitrag ist jetzt im Abi Buch.</p>
+      <div class="preview-actions">
+        <button id="btnDoneBook" class="btn btn-primary">📖 Abi Buch ansehen</button>
+        <button id="btnDoneAgain" class="btn btn-ghost">＋ Noch eins</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ABI BUCH (Galerie) ===================== -->
+  <section id="galleryScreen" class="screen">
+    <div class="subhead gallery-head">
+      <button id="btnGalleryBack" class="ghost">‹ Menü</button>
+      <div class="gh-title">
+        <h2>📖 Abi Buch</h2>
+        <span id="galleryStatus" class="gh-status"></span>
+      </div>
+      <button id="btnGalleryRefresh" class="ghost">⟳</button>
+    </div>
+    <div id="galleryGrid" class="gallery-grid"></div>
+    <div id="newToast" class="new-toast">✨ Neues Foto im Abi Buch!</div>
+  </section>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox">
+    <button id="lightboxClose" class="lightbox-close">×</button>
+    <a id="lightboxDownload" class="lightbox-download" download>⬇︎</a>
+    <div id="lightboxBody" class="lightbox-body"></div>
+  </div>
+
+  <!-- Busy-Overlay -->
+  <div id="busy" class="busy">
+    <div class="spinner"></div>
+    <p id="busyText"></p>
+  </div>
+
+</div>
+
+<!-- Supabase JS (für zentrales Speichern; ohne Keys wird lokal gearbeitet) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/assets.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/camera.js"></script>
+<script src="js/headtrack.js"></script>
+<script src="js/gallery.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

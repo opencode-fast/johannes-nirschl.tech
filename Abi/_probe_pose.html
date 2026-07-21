@@ -1,0 +1,64 @@
+<!doctype html><html><head><meta charset="utf-8"></head>
+<body style="margin:0;background:#333;display:flex;flex-wrap:wrap;width:640px">
+<div id="log" style="color:#fff;font:11px monospace;width:100%"></div>
+<script type="module">
+const log=(m)=>document.getElementById('log').innerHTML+=m+' ';
+try{
+const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js');
+log('three-ok');
+const RW=300, RH=300;
+// canonical face points (head-local, y-up, z toward camera)
+const CANON={10:[0,1.0,0.3],152:[0,-1.0,0.3],234:[-0.9,0,0],454:[0.9,0,0],33:[-0.4,0.4,0.4],263:[0.4,0.4,0.4]};
+function buildCap(){
+ const mB=()=>new THREE.MeshStandardMaterial({color:0x111111,roughness:.55,metalness:.1});
+ const mW=()=>new THREE.MeshStandardMaterial({color:0xf2f2f2,roughness:.5});
+ const mG=()=>new THREE.MeshStandardMaterial({color:0x888888,roughness:.5,metalness:.15});
+ const g=new THREE.Group();
+ const band=new THREE.Mesh(new THREE.CylinderGeometry(.52,.6,.55,32),mB());band.position.y=-.28;g.add(band);
+ const board=new THREE.Mesh(new THREE.BoxGeometry(1.5,.07,1.5),mB());board.position.y=.02;g.add(board);
+ const btn=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.05,16),mG());btn.position.y=.07;g.add(btn);
+ const hang=new THREE.Mesh(new THREE.CylinderGeometry(.02,.02,.5,8),mW());hang.position.set(.72,-.16,.72);g.add(hang);
+ const fr=new THREE.Mesh(new THREE.CylinderGeometry(.06,.11,.22,12),mW());fr.position.set(.72,-.5,.72);g.add(fr);
+ g.rotation.x=-.12;return g;
+}
+function renderPose(yaw,pitch,roll,label){
+ const R=new THREE.Euler(pitch,yaw,roll,'YXZ');
+ const rm=new THREE.Matrix4().makeRotationFromEuler(R);
+ // simulate landmarks
+ const lm={};
+ for(const k in CANON){const v=new THREE.Vector3(...CANON[k]).applyMatrix4(rm);
+   lm[k]={x:0.5+v.x*0.16, y:0.5 - v.y*0.16, z:-v.z*0.16};}
+ // ---- exact basis math from headtrack.js ----
+ const P=(i)=>new THREE.Vector3(lm[i].x*RW, RH-lm[i].y*RH, -lm[i].z*RW);
+ const pF=P(10),pC=P(152),pRC=P(234),pLC=P(454);
+ const up=pF.clone().sub(pC).normalize();
+ const rawR=pLC.clone().sub(pRC).normalize();
+ const fwd=rawR.clone().cross(up).normalize(); if(fwd.z<0)fwd.negate();
+ const right=up.clone().cross(fwd).normalize();
+ up.copy(fwd.clone().cross(right)).normalize();
+ const m=new THREE.Matrix4().makeBasis(right,up,fwd);
+ const quat=new THREE.Quaternion().setFromRotationMatrix(m);
+ const headW=pLC.distanceTo(pRC), headH=pF.distanceTo(pC);
+ const ax=pF.x+up.x*headH*0.55, ay=pF.y+up.y*headH*0.55;
+ // scene
+ const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
+ renderer.setSize(RW,RH);renderer.setClearColor(0x222222,1);
+ const scene=new THREE.Scene();
+ const cam=new THREE.OrthographicCamera(0,RW,RH,0,1,4000);cam.position.set(0,0,2000);
+ scene.add(new THREE.HemisphereLight(0xffffff,0x202020,1.15));
+ const d=new THREE.DirectionalLight(0xffffff,.9);d.position.set(.4,1,1.2);scene.add(d);
+ const pg=new THREE.Group();pg.add(buildCap());scene.add(pg);
+ pg.position.set(ax,ay,0);pg.scale.setScalar(headW*1.05);pg.quaternion.copy(quat);
+ renderer.render(scene,cam);
+ const wrap=document.createElement('div');wrap.style.cssText='width:300px;text-align:center;color:#fff;font:12px monospace';
+ wrap.appendChild(renderer.domElement);wrap.appendChild(document.createElement('div')).textContent=label;
+ document.body.appendChild(wrap);
+}
+const d2r=Math.PI/180;
+renderPose(0,0,0,'front');
+renderPose(35*d2r,0,0,'yaw 35 (turn)');
+renderPose(0,30*d2r,0,'pitch 30 (look down)');
+renderPose(0,0,25*d2r,'roll 25 (tilt)');
+document.title='POSE_OK';
+}catch(e){log('ERR:'+e.message);document.title='ERR';}
+</script></body></html>
