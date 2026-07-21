@@ -19,17 +19,20 @@
 
   // Feinjustage (falls eine Maske auf dem Gerät leicht sitzt)
   const TUNE = {
-    smooth: 0.4,   // 0..1, Glättung von Position/Drehung (höher = ruhiger, träger)
-    scale: 1.0,    // globaler Größenfaktor
-    lift: 1.0,     // globaler Höhen-Faktor (wie weit über dem Kopf)
+    smooth: 0.4,     // 0..1, Glättung von Position/Drehung (höher = ruhiger, träger)
+    scale: 1.0,      // globaler Größenfaktor der Maske (Größe folgt der Kopfgröße)
+    lift: 1.0,       // globaler Höhen-Faktor (wie weit über dem Kopf)
+    back: 0.18,      // wie weit die Maske nach hinten (Richtung Hinterkopf) rückt
+    occScale: 1.0,   // Größe des unsichtbaren Kopf-Occluders (Tiefen-Verdeckung)
+    occBack: 0.0,    // Occluder nach hinten schieben (falls Front fälschlich verdeckt)
   };
 
   // Verfügbare 3D-Masken (Metadaten schon vor init nutzbar)
   const MODELS = [
-    { id: "cap",     name: "Doktorhut",      anchor: "head", lift: 0.55, scale: 1.05 },
-    { id: "crown",   name: "Krone",          anchor: "head", lift: 0.30, scale: 0.95 },
+    { id: "cap",     name: "Doktorhut",      anchor: "head", lift: 0.95, scale: 1.05 },
+    { id: "crown",   name: "Krone",          anchor: "head", lift: 0.78, scale: 0.95 },
     { id: "glasses", name: "Brille",         anchor: "eyes", lift: 0.00, scale: 1.00 },
-    { id: "halo",    name: "Heiligenschein", anchor: "head", lift: 0.85, scale: 0.90, flat: true },
+    { id: "halo",    name: "Heiligenschein", anchor: "head", lift: 1.35, scale: 0.90 },
   ];
 
   const HT = {
@@ -47,7 +50,7 @@
   let THREE = null, FaceLandmarker = null, FilesetResolver = null;
   let landmarker = null;
   let renderer = null, scene = null, camera = null;
-  let poseGroup = null, modelRoots = {};
+  let poseGroup = null, modelRoots = {}, occluder = null;
   let videoEl = null, mountEl = null;
   let RW = 640, RH = 480;
   let rafId = null, lastVideoTime = -1;
@@ -117,7 +120,20 @@
     dir.position.set(0.4, 1, 1.2);
     scene.add(dir);
 
+    // Unsichtbarer Tiefen-Occluder in Kopfform: schreibt nur in den
+    // Tiefenpuffer (colorWrite:false). Dadurch werden Teile der Maske, die
+    // HINTER dem Kopf liegen, verdeckt → die Maske wirkt getragen, nicht
+    // davorgeklebt. Wird VOR der Maske gezeichnet (renderOrder 0).
+    occluder = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 28, 20),
+      new THREE.MeshBasicMaterial({ colorWrite: false })
+    );
+    occluder.renderOrder = 0;
+    occluder.visible = false;
+    scene.add(occluder);
+
     poseGroup = new THREE.Group();
+    poseGroup.renderOrder = 1;   // Maske nach dem Occluder zeichnen
     scene.add(poseGroup);
 
     MODELS.forEach((m) => {
@@ -201,6 +217,7 @@
     currentId = id;
     smoothed = null;
     Object.keys(modelRoots).forEach((k) => { modelRoots[k].visible = (k === id); });
+    if (occluder) occluder.visible = false;
     HT.isActive = !!id;
     if (id) start(); else render();
   }
@@ -245,7 +262,11 @@
 
     const res = landmarker.detectForVideo(videoEl, now);
     const root = modelRoots[currentId];
-    if (!res || !res.faceLandmarks || !res.faceLandmarks.length) { if (root) root.visible = false; return; }
+    if (!res || !res.faceLandmarks || !res.faceLandmarks.length) {
+      if (root) root.visible = false;
+      if (occluder) occluder.visible = false;
+      return;
+    }
     if (root) root.visible = true;
     const lm = res.faceLandmarks[0];
     const model = MODELS.find((m) => m.id === currentId);
@@ -266,35 +287,54 @@
     _q.m.makeBasis(_q.right, _q.up, _q.fwd);
     _q.quat.setFromRotationMatrix(_q.m);
 
-    // Maße in Pixeln
+    // Maße in Pixeln — Maskengröße skaliert mit der Kopfgröße
     const headW = pLC.distanceTo(pRC) || 1;
     const headH = pF.distanceTo(pC) || 1;
 
-    // Ankerpunkt (Screen-Position)
-    let ax, ay;
+    // Kopf-Mitte (3D, inkl. Tiefe) = Mittelpunkt zwischen den Wangen
+    const headC = pRC.clone().add(pLC).multiplyScalar(0.5);
+
+    // Anker (3D). "head": vom Kopfzentrum entlang Kopf-Oben auf den Scheitel.
+    // "eyes": Mittelpunkt der Augen. z bleibt erhalten → echte Tiefe.
+    const anchor = new THREE.Vector3();
     if (model.anchor === "eyes") {
-      const eR = P(eyeR), eL = P(eyeL);
-      ax = (eR.x + eL.x) / 2; ay = (eR.y + eL.y) / 2;
+      anchor.copy(P(eyeR)).add(P(eyeL)).multiplyScalar(0.5);
     } else {
-      // von der Stirn entlang der Kopf-Oben-Richtung nach oben
-      ax = pF.x + _q.up.x * headH * model.lift * TUNE.lift;
-      ay = pF.y + _q.up.y * headH * model.lift * TUNE.lift;
+      const lift = headH * model.lift * TUNE.lift;
+      anchor.copy(headC)
+        .addScaledVector(_q.up, lift)
+        .addScaledVector(_q.fwd, -headH * TUNE.back);   // etwas nach hinten
     }
     const scale = headW * model.scale * TUNE.scale;
 
+    // Occluder-Zentrum: etwas über der Wangen-Mitte, in Richtung Schädelmitte,
+    // optional nach hinten (von der Kamera weg) verschoben
+    const occC = headC.clone()
+      .addScaledVector(_q.up, headH * 0.12)
+      .addScaledVector(_q.fwd, -headH * TUNE.occBack);
+
     // Glättung (Position/Scale linear, Drehung per slerp)
     if (!smoothed) {
-      smoothed = { x: ax, y: ay, scale: scale, quat: _q.quat.clone() };
+      smoothed = { pos: anchor.clone(), occ: occC.clone(), headW: headW, scale: scale, quat: _q.quat.clone() };
     } else {
       const s = 1 - TUNE.smooth;
-      smoothed.x += (ax - smoothed.x) * s;
-      smoothed.y += (ay - smoothed.y) * s;
+      smoothed.pos.lerp(anchor, s);
+      smoothed.occ.lerp(occC, s);
+      smoothed.headW += (headW - smoothed.headW) * s;
       smoothed.scale += (scale - smoothed.scale) * s;
       smoothed.quat.slerp(_q.quat, s);
     }
 
-    poseGroup.position.set(smoothed.x, smoothed.y, 0);
+    // Maske
+    poseGroup.position.copy(smoothed.pos);
     poseGroup.scale.setScalar(smoothed.scale);
     poseGroup.quaternion.copy(smoothed.quat);
+
+    // Unsichtbarer Kopf-Occluder: Ellipsoid in Kopfform, mit dem Kopf gedreht
+    const hw = smoothed.headW * TUNE.occScale;
+    occluder.visible = true;
+    occluder.position.copy(smoothed.occ);
+    occluder.quaternion.copy(smoothed.quat);
+    occluder.scale.set(hw * 0.60, hw * 0.78, hw * 0.66);
   }
 })();

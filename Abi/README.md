@@ -25,10 +25,17 @@ Minimalistisches **Schwarz-Weiß-Design**.
 - Brauchen **WebGL** und beim ersten Antippen **Internet** (Modell + Bibliotheken
   werden per CDN geladen). Fehlt beides, fällt die App automatisch auf einfache
   Emoji-Masken zurück – die App bleibt voll nutzbar.
-- Sitzt eine Maske auf einem Gerät leicht verschoben, lässt sich das live
-  nachjustieren, z.B. in der Konsole:
-  `HeadTrack.tune({ yawGain: 3.5, pitchGain: 3.0, signYaw: -1 })`
-  (Werte in `js/headtrack.js` → `TUNE`).
+- Die volle Kopf-Drehung (Neigen/Drehen/Kippen) kommt direkt aus der
+  Gesichts-Geometrie — kein manuelles Kalibrieren nötig.
+- Die **Größe folgt automatisch der Kopfgröße** (näher/größer = größere Maske).
+- **Tiefe/Verdeckung:** ein unsichtbarer Kopf-Occluder verdeckt die Teile der
+  Maske, die hinter dem Kopf liegen — der Hut wirkt getragen, nicht davor.
+- Live nachjustierbar (Standardwerte in `js/headtrack.js` → `TUNE`):
+  `HeadTrack.tune({ lift: 1.1, scale: 0.95, occScale: 1.1, occBack: 0.05 })`
+  - `lift` = Höhe über dem Kopf, `scale` = Größe, `smooth` = Ruhe/Trägheit
+  - `occScale` = Größe der Verdeckungs-Hülle (größer = mehr wird hinterm Kopf
+    versteckt), `occBack` = Hülle nach hinten schieben, falls die Front der
+    Maske fälschlich abgeschnitten wird.
 
 ## Schnellstart (lokal testen)
 Weil die App die Kamera nutzt, braucht sie `https` **oder** `localhost`:
