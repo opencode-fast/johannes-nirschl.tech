@@ -7,9 +7,9 @@
   "use strict";
 
   const TYPES = [
-    { id: "fire",     name: "🔥 Feuerbälle" },
-    { id: "confetti", name: "🎉 Konfetti" },
-    { id: "sparkle",  name: "✨ Funken" },
+    { id: "fire",     name: "Feuerbälle" },
+    { id: "confetti", name: "Konfetti" },
+    { id: "sparkle",  name: "Funken" },
   ];
 
   let canvas = null, ctx = null, stage = null;
