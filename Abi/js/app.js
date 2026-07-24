@@ -17,6 +17,7 @@ const App = (function () {
   let capturedBlob = null;      // aktuelles Ergebnis
   let capturedType = null;      // "photo" | "strip" | "video"
   let recording = false;
+  let userPickedMask = false;   // hat der Nutzer selbst eine Maske gewählt?
 
   /* ---------------- Start ---------------- */
   function init() {
@@ -31,6 +32,23 @@ const App = (function () {
       document.getElementById("modeNote").style.display = "block";
     }
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    // 3D-Masken schon beim Start im Hintergrund vorladen (erst Doktorhut,
+    // dann die Krone), damit sie sofort bereitstehen, wenn man die Box betritt.
+    preloadMasks();
+  }
+
+  // Lädt die Masken-Engine im Hintergrund vor — blockiert das Startmenü nicht.
+  function preloadMasks() {
+    const HT = window.HeadTrack;
+    if (!HT || HT.available === false) return;
+    const video = document.getElementById("video");
+    const stage = document.getElementById("stage");
+    if (!video || !stage) return;
+    HT.init(video, stage).then((ok) => {
+      // Klappt das Vorladen nicht (offline/kein WebGL), auf Emoji-Masken umbauen.
+      if (!ok) buildMaskRow();
+    }).catch(() => {});
   }
 
   /* ---------------- Startmenü ---------------- */
@@ -61,8 +79,8 @@ const App = (function () {
       Camera.applyMirror();
       Camera.renderBackground();
       hideCamError();
-      // Kopf-Tracking fortsetzen, falls eine 3D-Maske aktiv ist
-      if (window.HeadTrack && window.HeadTrack.ready && window.HeadTrack.isActive) window.HeadTrack.start();
+      // 3D-Masken: standardmäßig den Doktorhut zeigen (bzw. eigene Auswahl fortsetzen)
+      ensureDefaultMask();
       // Effekte vorbereiten/fortsetzen
       if (window.Effects) {
         window.Effects.init(document.getElementById("stage"));
@@ -171,22 +189,33 @@ const App = (function () {
     mr.innerHTML = "";
     const HT = window.HeadTrack;
     if (!HT || HT.available === false) { buildEmojiMaskRow(); return; }
-    mr.appendChild(mkMaskChip("Keine", null, true));
-    HT.models.forEach((m) => mr.appendChild(mkMaskChip(m.name, m.id, false)));
+    // Doktorhut ist die Standard-Maske und daher vorausgewählt.
+    mr.appendChild(mkMaskChip("Keine", null, false));
+    HT.models.forEach((m) => mr.appendChild(mkMaskChip(m.name, m.id, m.id === "cap")));
   }
 
   function mkMaskChip(label, id, active) {
     const b = document.createElement("button");
     b.className = "chip" + (active ? " active" : "");
     b.textContent = label;
+    b.dataset.maskId = id == null ? "" : id;
     b.addEventListener("click", () => selectMask(id, b));
     return b;
+  }
+
+  function markMaskChip(id) {
+    const mr = document.getElementById("maskRow");
+    if (!mr) return;
+    mr.querySelectorAll(".chip").forEach((x) => x.classList.remove("active"));
+    const chip = mr.querySelector(`[data-mask-id="${id == null ? "" : id}"]`);
+    if (chip) chip.classList.add("active");
   }
 
   async function selectMask(id, btn) {
     const HT = window.HeadTrack;
     const hint = document.getElementById("maskHint");
     if (!HT) return;
+    userPickedMask = true;   // Nutzer entscheidet ab jetzt selbst
 
     // Beim ersten echten Masken-Tap die Engine laden
     if (id && HT.available !== true) {
@@ -205,6 +234,28 @@ const App = (function () {
     document.querySelectorAll("#maskRow .chip").forEach((x) => x.classList.remove("active"));
     if (btn) btn.classList.add("active");
     hint.textContent = id ? "Bewege deinen Kopf — die Maske folgt dir." : "3D-Masken folgen deinem Kopf.";
+  }
+
+  // Beim Betreten der Box automatisch den Doktorhut zeigen (vorgeladen), außer
+  // der Nutzer hat vorher schon selbst eine Maske (auch „Keine") gewählt.
+  async function ensureDefaultMask() {
+    const HT = window.HeadTrack;
+    if (!HT || HT.available === false) return;
+    if (userPickedMask) {
+      // eigene Auswahl des Nutzers fortsetzen
+      if (HT.ready && HT.isActive) HT.start();
+      return;
+    }
+    if (HT.available !== true) {
+      // sollte durch Vorladen bereit sein — sonst hier nachziehen
+      const ok = await HT.init(document.getElementById("video"), document.getElementById("stage"));
+      if (!ok) { buildEmojiMaskRow(); return; }
+      Camera.applyMirror();
+    }
+    HT.setMask("cap");
+    markMaskChip("cap");
+    const hint = document.getElementById("maskHint");
+    if (hint) hint.textContent = "Bewege deinen Kopf — die Maske folgt dir.";
   }
 
   /* ---------------- Partikel-Effekte ---------------- */

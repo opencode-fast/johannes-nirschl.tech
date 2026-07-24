@@ -221,6 +221,10 @@ svg { display: block; }
 
 /* -------- Auslöser -------- */
 .booth-controls { display: flex; align-items: center; justify-content: center; gap: 30px; margin-top: auto; padding-top: 16px; }
+/* Auf dem Handy den Foto-Knopf etwas höher setzen (bessere Erreichbarkeit) */
+@media (max-width: 560px) {
+  .booth-controls { margin-bottom: 26px; }
+}
 .round-btn {
   width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--line); background: transparent;
   cursor: pointer; display: grid; place-items: center; color: var(--ink);

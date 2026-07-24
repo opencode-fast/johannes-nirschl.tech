@@ -97,14 +97,21 @@
         minTrackingConfidence: 0.3,
       });
 
-      // echtes Kronen-Modell laden (fällt auf prozedurale Krone zurück)
-      crownGeo = await loadCrownGeometry()
-        .then((g) => { console.info("Abi: Krone-STL geladen,", g.attributes.position.count, "Vertices"); return g; })
-        .catch((e) => { console.warn("Abi: Krone-STL NICHT geladen, nutze prozedurale Krone:", e); return null; });
-
+      // Szene SOFORT aufbauen — der Doktorhut (prozedural) ist damit direkt
+      // einsatzbereit. „Erst der Doktorhut, dann alles andere."
       setupScene();
       HT.available = true;
       HT.ready = true;
+
+      // Die schwere Krone (STL) erst danach im Hintergrund nachladen und die
+      // (zunächst prozedurale) Krone still auf das echte Modell aufrüsten.
+      loadCrownGeometry()
+        .then((g) => {
+          console.info("Abi: Krone-STL geladen,", g.attributes.position.count, "Vertices");
+          crownGeo = g; upgradeCrown();
+        })
+        .catch((e) => { console.warn("Abi: Krone-STL NICHT geladen, nutze prozedurale Krone:", e); });
+
       return true;
     } catch (e) {
       console.warn("HeadTrack init fehlgeschlagen:", e);
@@ -153,6 +160,27 @@
     // Ein Rig pro Person: eigene Maske, eigener Kopf-Occluder, eigene Quaste.
     rigs = [];
     for (let i = 0; i < MAX_FACES; i++) rigs.push(makeRig());
+  }
+
+  // Krone nachträglich vom prozeduralen Platzhalter auf das echte STL-Modell
+  // umstellen (wird aufgerufen, sobald das STL im Hintergrund geladen ist).
+  function upgradeCrown() {
+    if (!crownGeo || !rigs.length) return;
+    rigs.forEach((rig) => {
+      const old = rig.modelRoots.crown;
+      if (!old) return;
+      const wasVisible = old.visible;
+      rig.root.remove(old);
+      old.traverse((o) => {
+        if (o.geometry && o.geometry !== crownGeo && o.geometry.dispose) o.geometry.dispose();
+        if (o.material && o.material.dispose) o.material.dispose();
+      });
+      const fresh = buildModel("crown");
+      fresh.visible = wasVisible;
+      fresh.traverse((o) => { o.renderOrder = 1; });
+      rig.root.add(fresh);
+      rig.modelRoots.crown = fresh;
+    });
   }
 
   // Kleine prozedurale Studio-Umgebung (Verlauf + zwei Lichtflecken) als
