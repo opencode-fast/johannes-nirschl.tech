@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grenzen endlicher Automaten, Chomsky-Hierarchie und Turingmaschine</title>
+<style>
+  :root { --text:#1d2125; --muted:#6a737b; --line:#dee2e6; --code:#f5f6f7; --accent:#c2410c; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:#f4f5f7; color:var(--text);
+         font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+  main { max-width: 960px; margin: 24px auto; padding: 32px 40px; background:#fff;
+          border:1px solid var(--line); border-radius:8px; }
+  h1 { font-size: 1.9rem; line-height:1.25; margin:0 0 20px; }
+  h2 { font-size: 1.45rem; margin: 32px 0 12px; }
+  h3 { font-size: 1.2rem; margin: 24px 0 10px; }
+  hr { border:0; border-top:1px solid var(--line); margin: 32px 0; }
+  img { max-width:100%; height:auto; display:block; margin: 16px 0; }
+  pre { background:var(--code); border:1px solid var(--line); border-radius:6px; padding:12px 14px;
+         overflow-x:auto; font-size: 0.85rem; line-height:1.45; }
+  tt, code, pre { font-family: SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+  tt, code { background:var(--code); padding: 1px 4px; border-radius:4px; font-size:0.9em; }
+  table { border-collapse: collapse; margin: 16px 0; width:100%; }
+  th, td { border-bottom:1px solid var(--line); padding: 8px 10px; text-align:left; vertical-align:top; }
+  a { color: var(--accent); }
+  ul, ol { padding-left: 1.5em; }
+  li { margin: 3px 0; }
+  .toc { border:1px solid var(--line); border-radius:6px; padding: 14px 20px; margin: 0 0 28px; max-width: 520px; }
+  .toc-title { font-variant: small-caps; color: var(--muted); text-align:center; margin-bottom:6px; letter-spacing:.04em; }
+  .toc ol { margin:0; padding-left: 1.2em; }
+  .toc li.l3 { margin-left: 1.2em; list-style: circle; }
+  @media (max-width: 640px) { main { margin:0; padding: 20px 16px; border:0; border-radius:0; } }
+</style>
+</head>
+<body>
+<main>
+<h1 id="grenzen-endlicher-automaten-chomsky-hierarchie-und-turingmaschine">Grenzen endlicher Automaten, Chomsky-Hierarchie und Turingmaschine</h1><nav class="toc"><div class="toc-title">Inhaltsübersicht</div><ol><li class="l2"><a href="#einstieg-clan-namen-prüfen">Einstieg: Clan-Namen prüfen</a></li><li class="l2"><a href="#variationen-reicht-noch-ein-dfa">Variationen: Reicht noch ein DFA?</a></li><li class="l2"><a href="#wie-erweitern-wir-das-konzept">Wie erweitern wir das Konzept?</a></li><li class="l2"><a href="#chomsky-hierarchie">Chomsky-Hierarchie</a></li><li class="l2"><a href="#turingmaschine">Turingmaschine</a></li><li class="l3"><a href="#beispiel-palindrome-abba">Beispiel: Palindrome (abba)</a></li><li class="l2"><a href="#variation-3-als-turingmaschine">Variation 3 als Turingmaschine</a></li><li class="l2"><a href="#zusammenfassung">Zusammenfassung</a></li></ol></nav>
+
+
+<h2 id="einstieg-clan-namen-prüfen">Einstieg: Clan-Namen prüfen</h2>
+
+<p>Aufgabe: Zeige <strong>mit Beweis</strong>, ob ein <strong>DFA</strong> diese Sprache erkennen kann.</p>
+
+<pre>
+start = clan, " ", name
+clan  = ("[", name, "]") | ("&lt;", name, "&gt;")
+name  = letter, (letter|number|underscore)*
+</pre>
+
+<p>Beweismöglichkeiten:</p>
+<ul>
+	<li><strong>Zustandsdiagramm</strong> eines DFA oder NFA</li>
+	<li><strong>Regex</strong></li>
+	<li><strong>Zustandsübergangstabelle</strong></li>
+	<li><strong>Reguläre Grammatik</strong> (siehe unten)</li>
+	<li><strong>Ausführliche Begründung</strong></li>
+</ul>
+<p><img src="bilder/20.10.26%20DFA%20Variation%202.png" loading="lazy" title="DFA für Variation 2" alt="DFA für Variation 2" /></p>
+
+<pre>
+(\[[a-zA-Z][a-zA-Z0-9_]*\]|&lt;[a-zA-Z][a-zA-Z0-9_]*&gt;) [a-zA-Z][a-zA-Z0-9_]*
+</pre>
+
+<p>Reguläre Grammatik: Jede Regel hat die Form <tt>Var → a Var | a</tt> mit Var ∈ V (Variable) und a ∈ Σ (Zeichen). Rechts steht genau ein Zeichen, höchstens gefolgt von einer Variablen.</p>
+
+<hr />
+
+<h2 id="variationen-reicht-noch-ein-dfa">Variationen: Reicht noch ein DFA?</h2>
+
+<p>Unser Beispiel lässt sich also mit einem DFA umsetzen. Was passiert, wenn wir die Clan-Regel verändern?</p>
+
+<ul>
+	<li><strong>Variation 1 (DFA):</strong> <tt>clan = "[", name, "]"</tt></li>
+	<li><strong>Variation 2 (DFA):</strong> <tt>clan = ("[", name, "]") | ("&lt;", name, "&gt;")</tt></li>
+	<li><strong>Variation 3 (kein DFA):</strong> <tt>clan = "[", (clan|name), "]"</tt>, z. B. <tt>[[[Wolf]]] Anna</tt></li>
+	<li><strong>Variation 4 (kein DFA):</strong> <tt>clan = ("[", (name|clan), "]") | ("&lt;", (name|clan), "&gt;")</tt></li>
+</ul>
+<p><img src="bilder/20.10.26%20Variation%203%20Klammertiefe.png" loading="lazy" title="Versuch eines DFA für Variation 3" alt="Versuch eines DFA für Variation 3" /></p>
+
+<p>Warum kein DFA? Ein DFA merkt sich die <strong>Schachtelungstiefe</strong> nur über seinen Zustand. Beliebige Tiefe → <strong>unendlich viele Zustände</strong> nötig, ein DFA hat aber nur <strong>endlich viele</strong>. ⇒ Variation 3 und 4 sind <strong>nicht regulär</strong>, lassen sich aber mit einer Grammatik (EBNF) beschreiben.</p>
+
+<hr />
+
+<h2 id="wie-erweitern-wir-das-konzept">Wie erweitern wir das Konzept?</h2>
+
+<p>Dem DFA fehlt also ein Gedächtnis für die geöffneten Klammern. Wie können wir ihm mehr Speicher geben?</p>
+
+<ul>
+	<li><strong>Zähler-Variable</strong> („[“ +1, „]“ −1): zu <strong>speziell</strong>, scheitert an Variation 4 (<tt>[&lt;Wolf]&gt; Anna</tt>).</li>
+	<li><strong>Kellerautomat</strong> (<i>nicht lehrplanrelevant</i>): Unser Wort steht auf einem unendlich langen Band, der Lesekopf liest nur in <strong>eine Richtung</strong>. Die Steuereinheit zeigt den <strong>Zustand</strong> und hat eine <strong>„Erkannt“-Anzeige</strong>. Dazu kommt ein <strong>Kellerspeicher, der unendlich groß ist</strong> (Zugriff nur oben). „[“ → ablegen, „]“ → entnehmen, am Ende leer → passt.</li>
+</ul>
+<p><img src="bilder/20.10.26%20Kellerautomat.png" loading="lazy" title="Kellerautomat" alt="Kellerautomat" /></p>
+
+<hr />
+
+<h2 id="chomsky-hierarchie">Chomsky-Hierarchie</h2>
+
+<p>Mit dem Keller schafft der Automat mehr als ein DFA. Gibt es noch mächtigere Automaten? Einen Überblick, welcher Automat welche Sprachen erkennt, liefert die Chomsky-Hierarchie.</p>
+
+<p>Noam Chomsky (Ende 1950er): vier Sprachtypen, ineinander enthalten (Typ 3 ⊂ Typ 2 ⊂ Typ 1 ⊂ Typ 0).</p>
+
+<p><img src="bilder/20.10.26%20Chomsky-Hierarchie.png" loading="lazy" title="Chomsky-Hierarchie" alt="Chomsky-Hierarchie" /></p>
+
+<p>Links stehen die <strong>Grammatiken</strong>, die eine Sprache <strong>beschreiben</strong>, rechts die <strong>Automaten</strong>, die sie <strong>erkennen</strong>. Von innen nach außen:</p>
+<ul>
+	<li><strong>Typ 3, reguläre Sprachen:</strong> reguläre Grammatik (<tt>Var → a Var | a</tt>), erkannt von <strong>DFA und NFA</strong> (Zustandsdiagramm, Zustandsübergangstabelle, Regex). Beispiel: Variation 1 und 2.</li>
+	<li><strong>Typ 2, kontextfreie Sprachen:</strong> kontextfreie Grammatik (<strong>EBNF, Syntaxdiagramm</strong>), links steht genau eine Variable und eine Regel darf sich in der Mitte selbst aufrufen. Erkannt vom <strong>Kellerautomaten</strong>. Beispiel: Variation 3 und 4.</li>
+	<li><strong>Typ 1, kontextsensitive Sprachen:</strong> Eine Variable wird abhängig von ihrer Umgebung (dem Kontext) ersetzt, das Wort wird dabei nie kürzer. Erkannt von der <strong>linear beschränkten Turingmaschine</strong>, die nur den Bandteil mit der Eingabe benutzen darf. Beispiel: aⁿbⁿcⁿ (abc, aabbcc, …).</li>
+	<li><strong>Typ 0, rekursiv aufzählbare Sprachen:</strong> allgemeine Grammatik ohne Einschränkungen für die Regeln. Erkannt von der <strong>Turingmaschine</strong>.</li>
+</ul>
+<p>Je weiter außen ein Typ liegt, desto mächtiger muss der Automat sein. Ein Automat eines äußeren Typs kann auch alle Sprachen der inneren Typen erkennen.</p>
+
+<hr />
+
+<h2 id="turingmaschine">Turingmaschine</h2>
+
+<p>Ganz außen in der Hierarchie steht der mächtigste Automat: die Turingmaschine.</p>
+
+<p><img src="bilder/20.10.26%20Turingmaschine.png" loading="lazy" title="Aufbau einer Turingmaschine" alt="Aufbau einer Turingmaschine" /></p>
+
+<p>Aufbau wie beim Kellerautomaten (unendlich langes Band, Kopf, Steuereinheit mit <strong>Zustand</strong> und <strong>„Erkannt“-Anzeige</strong>), aber ohne Keller. Unterschied:</p>
+<ul>
+	<li>bewegt sich in <strong>beide Richtungen</strong></li>
+	<li>kann <strong>beliebig auf das Band schreiben</strong> (Band = Eingabe und Speicher)</li>
+</ul>
+<p>Mächtigster Automat: <strong>Die Turingmaschine kann alles, was unser Computer kann.</strong></p>
+
+<p>Definition: Eine Turingmaschine ist gegeben durch ein <strong>7-Tupel</strong>:</p>
+
+<pre>
+M = (Z, Σ, Γ, δ, z0, □, E)
+δ: Z × Γ → Z × Γ × {L, R, N}
+</pre>
+
+<ul>
+	<li><strong>Z</strong> Zustandsmenge, <strong>Σ</strong> Eingabealphabet, <strong>Γ</strong> (großes Gamma) Arbeitsalphabet (Γ ⊃ Σ)</li>
+	<li><strong>δ</strong> Überführungsfunktion (Menge der Übergänge), muss <strong>vollständig für alles definiert</strong> sein</li>
+	<li><strong>z0</strong> Startzustand, <strong>□</strong> Blank (□ ∈ Γ − Σ), <strong>E</strong> Menge der Endzustände</li>
+</ul>
+<h3 id="beispiel-palindrome-abba">Beispiel: Palindrome (abba)</h3>
+
+<p>Wie die Turingmaschine ihre beiden neuen Fähigkeiten einsetzt, zeigt ein klassisches Beispiel:</p>
+
+<ol>
+	<li>Erstes Zeichen im Zustand merken und löschen</li>
+	<li>Ans Ende laufen, letztes Zeichen vergleichen: gleich → löschen, sonst <strong>reject</strong></li>
+	<li>Zurück zum Anfang und wiederholen; nichts mehr übrig → <strong>accept</strong></li>
+</ol>
+<p><img src="bilder/20.10.26%20Palindrom%20Ablauf.png" loading="lazy" title="Ablauf der Palindrom-Turingmaschine für abba" alt="Ablauf der Palindrom-Turingmaschine für abba" /></p>
+
+<p>Übung: um <strong>c</strong> erweitern (z. B. <tt>cabbac</tt>). Lösung für <a target="_blank" rel="noopener" href="https://turingmachine.io">turingmachine.io</a>:</p>
+
+<pre>
+# Erkennt Palindrome aus den Zeichen a, b und c
+input: 'cabccbac' # probiere auch: a, ab, bb, babab, cabbac
+blank: ' '
+start state: start
+synonyms:
+  accept: {R: accept}
+  reject: {R: reject}
+# Ein Palindrom ist entweder das leere Wort, ein einzelnes Zeichen
+# oder ein (kürzeres) Palindrom, an das vorne und hinten dasselbe Zeichen angehängt wurde.
+table:
+  start:
+    a: {write: ' ', R: haveA}
+    b: {write: ' ', R: haveB}
+    c: {write: ' ', R: haveC}
+    ' ': accept # leeres Wort
+  haveA:
+    [a,b,c]: R
+    ' ': {L: matchA}
+  haveB:
+    [a,b,c]: R
+    ' ': {L: matchB}
+  haveC:
+    [a,b,c]: R
+    ' ': {L: matchC}
+  matchA:
+    a: {write: ' ', L: back} # gleiches Zeichen an beiden Enden
+    b: reject
+    c: reject
+    ' ': accept # einzelnes Zeichen in der Mitte
+  matchB:
+    a: reject
+    b: {write: ' ', L: back} # gleiches Zeichen an beiden Enden
+    c: reject
+    ' ': accept # einzelnes Zeichen in der Mitte
+  matchC:
+    a: reject
+    b: reject
+    c: {write: ' ', L: back} # gleiches Zeichen an beiden Enden
+    ' ': accept # einzelnes Zeichen in der Mitte
+  back:
+    [a,b,c]: L
+    ' ': {R: start}
+  accept:
+  reject:
+</pre>
+
+<hr />
+
+<h2 id="variation-3-als-turingmaschine">Variation 3 als Turingmaschine</h2>
+
+<p>Damit können wir zur Einstiegsaufgabe zurückkehren: Was kein DFA schafft, setzen wir jetzt mit einer Turingmaschine um.</p>
+
+<ol>
+	<li><strong>Phase 1:</strong> Form <tt>[ … [ name ] … ] ␣ name</tt> prüfen, nur nach rechts und ohne zu schreiben (wie ein DFA)</li>
+	<li><strong>Phase 2:</strong> Klammern paarweise abhaken („[“ → X, „]“ → Y). Bleibt eine übrig → <strong>reject</strong>, sonst <strong>accept</strong></li>
+</ol>
+<p><img src="bilder/20.10.26%20TM%20Variation%203%20Ablauf.png" loading="lazy" title="Ablauf der Turingmaschine für Variation 3" alt="Ablauf der Turingmaschine für Variation 3" /></p>
+
+<p>Blank ist □, weil ␣ zur Sprache gehört. X und Y sind Arbeitszeichen (in Γ, nicht in Σ).</p>
+
+<pre>
+# Turingmaschine für Variation 3:  clan = "[", (clan|name), "]"
+# Kompaktes Alphabet: Buchstaben a, b, c · Ziffern 0, 1 · _
+# Σ = {a, b, c, 0, 1, _, [, ], ␣}   Γ = Σ ∪ {X, Y, □}
+# X = abgehakte "[", Y = abgehakte "]", □ = Blank (␣ gehört zur Sprache)
+input: '[[ab]] c' # auch testen: [a] b   [[[a_1]]] c0   [[ab] c   [ab]] c   [[ab]]c
+blank: '□'
+start state: start
+synonyms:
+  accept: {R: accept}
+  reject: {R: reject}
+table:
+  # Phase 1: Form [ … [ name ] … ] ␣ name prüfen, nur nach rechts, nichts schreiben
+  start:
+    '[': {R: open}
+    [a,b,c,0,1,_,']',' ',X,Y,'□']: reject
+  open:       # mindestens eine "[" gelesen
+    '[': R
+    [a,b,c]: {R: name1}
+    [0,1,_,']',' ',X,Y,'□']: reject
+  name1:      # Name innerhalb der Klammern
+    [a,b,c,0,1,_]: R
+    ']': {R: close}
+    ['[',' ',X,Y,'□']: reject
+  close:      # schließende Klammern
+    ']': R
+    ' ': {R: sep}
+    [a,b,c,0,1,_,'[',X,Y,'□']: reject
+  sep:        # nach dem Leerzeichen muss ein Buchstabe kommen
+    [a,b,c]: {R: name2}
+    [0,1,_,'[',']',' ',X,Y,'□']: reject
+  name2:      # Name hinter dem Leerzeichen
+    [a,b,c,0,1,_]: R
+    '□': {L: back}
+    ['[',']',' ',X,Y]: reject
+
+  # Phase 2: Klammern paarweise abhaken, dazu schreiben und in beide Richtungen laufen
+  back:       # zurück an den Anfang des Wortes
+    [a,b,c,0,1,_,'[',']',' ',X,Y]: L
+    '□': {R: count}
+  count:      # nächste "[" suchen und abhaken
+    X: R
+    '[': {write: X, R: findClose}
+    [a,b,c]: {R: checkDone}   # keine "[" mehr übrig
+    [0,1,_,']',' ',Y,'□']: reject
+  findClose:  # passende "]" suchen und abhaken
+    ['[',a,b,c,0,1,_,Y]: R
+    ']': {write: Y, L: back}
+    ' ': reject               # zu viele "["
+    [X,'□']: reject
+  checkDone:  # sind auch alle "]" abgehakt?
+    [a,b,c,0,1,_,Y]: R
+    ']': reject               # zu viele "]"
+    ' ': accept               # alle Klammern passen zusammen
+    ['[',X,'□']: reject
+  accept:
+  reject:
+</pre>
+
+<hr />
+
+<h2 id="zusammenfassung">Zusammenfassung</h2>
+
+<ul>
+	<li>Ob ein DFA reicht, zeigt man mit Zustandsdiagramm, Regex, Zustandsübergangstabelle, regulärer Grammatik oder einer ausführlichen Begründung.</li>
+	<li>DFA und NFA erkennen genau die <strong>regulären Sprachen</strong> (Typ 3).</li>
+	<li>Beliebig tief <strong>verschachtelte Klammern</strong> sind nicht regulär: Ein DFA bräuchte dafür unendlich viele Zustände.</li>
+	<li>Ein Zähler ist zu speziell, allgemeiner ist der <strong>Kellerautomat</strong> mit unendlich großem Kellerspeicher (Typ 2).</li>
+	<li>Die <strong>Chomsky-Hierarchie</strong> ordnet jedem Sprachtyp eine Grammatik und einen Automaten zu: Typ 3 ⊂ Typ 2 ⊂ Typ 1 ⊂ Typ 0.</li>
+	<li>Die Turingmaschine bewegt sich in <strong>beide Richtungen</strong> und kann <strong>beliebig auf das Band schreiben</strong>. Formal ist sie ein 7-Tupel M = (Z, Σ, Γ, δ, z0, □, E), wobei δ vollständig definiert sein muss.</li>
+	<li>Die <strong>Turingmaschine</strong> ermöglicht die Umsetzung von Typ 0 Sprachen und ist so mächtig, dass sie jegliche Algorithmen in allen Computer nachbilden kann.</li>
+	<li>Mit ihr lässt sich auch Variation 3 umsetzen: erst den Aufbau prüfen, dann die Klammern paarweise abhaken.</li>
+</ul>
+</main>
+</body>
+</html>
