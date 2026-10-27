@@ -1,0 +1,462 @@
+/* Tippkurs styles. Colours, fonts, navbar and footer come from ../styles.css. */
+
+[hidden] {
+  display: none !important;
+}
+
+.typing-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 5rem 4rem 6rem;
+}
+
+.typing-header {
+  margin-bottom: 3rem;
+}
+
+.typing-label {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  padding: 0.2rem 0.5rem;
+  background: var(--text-primary);
+  color: var(--bg-color);
+}
+
+.typing-title {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.typing-intro {
+  color: var(--text-muted);
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+  max-width: 640px;
+}
+
+.typing-layout {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 3rem;
+  align-items: start;
+}
+
+/* Lesson list */
+
+.lesson-panel {
+  border: 1px solid var(--border-color);
+  background: #fdfdfd;
+  padding: 1.5rem;
+  min-width: 0;
+}
+
+.panel-heading {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.module + .module {
+  margin-top: 1.5rem;
+}
+
+.module-title {
+  font-size: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.module ul {
+  list-style: none;
+}
+
+.lesson-button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 2.2rem minmax(0, 1fr);
+  column-gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.5rem 0.6rem;
+  border: 0;
+  border-left: 2px solid transparent;
+  background: none;
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lesson-button:hover:not(:disabled) {
+  background: rgba(63, 94, 81, 0.06);
+}
+
+.lesson-button:disabled {
+  color: var(--text-muted);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.lesson-button[aria-current="true"] {
+  border-left-color: var(--accent-color);
+  background: rgba(63, 94, 81, 0.1);
+}
+
+.lesson-num {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.lesson-name {
+  font-size: 0.95rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.lesson-status {
+  grid-column: 2;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.lesson-status.is-passed {
+  color: var(--accent-color);
+}
+
+.text-button {
+  margin-top: 1.5rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Trainer */
+
+.trainer {
+  border: 1px solid var(--border-color);
+  background: #fdfdfd;
+  padding: 2rem;
+  min-width: 0;
+}
+
+.trainer-title {
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  margin: 0.4rem 0 0.75rem;
+}
+
+.trainer-description {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.lesson-tip {
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-left: 2px solid var(--accent-color);
+  background: rgba(63, 94, 81, 0.06);
+  font-size: 0.9rem;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.75rem 1rem;
+  border-right: 1px solid var(--border-color);
+}
+
+.stat:last-child {
+  border-right: 0;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+}
+
+.text-panel {
+  position: relative;
+  max-height: 13.5rem;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border-color);
+  background: var(--bg-color);
+  font-family: var(--font-mono);
+  font-size: clamp(1.05rem, 2.2vw, 1.4rem);
+  line-height: 1.9;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  cursor: text;
+  user-select: none;
+}
+
+.text-panel .done {
+  color: var(--accent-color);
+}
+
+.text-panel .todo {
+  color: var(--text-muted);
+}
+
+.text-panel .current {
+  background: var(--accent-color);
+  color: #fff;
+}
+
+.text-panel .current.miss {
+  background: #b3261e;
+}
+
+.typing-input {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--text-primary);
+  background: #fff;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+}
+
+.typing-input:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.typing-input:read-only {
+  background: var(--bg-color);
+}
+
+.hint {
+  min-height: 1.6em;
+  margin: 0.9rem 0 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+.trainer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn {
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--text-primary);
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.btn:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.btn-primary {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #324c42;
+  border-color: #324c42;
+  color: #fff;
+}
+
+/* Keyboard. Fifteen fluid columns, so the keys scale with the page width. */
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  user-select: none;
+}
+
+.kb-row {
+  display: grid;
+  grid-template-columns: repeat(15, minmax(0, 1fr));
+  gap: 0.3rem;
+}
+
+.keyboard .key {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: clamp(1.9rem, 5vw, 2.6rem);
+  min-width: 0;
+  border: 1px solid var(--border-color);
+  background: var(--finger-bg, #fff);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 2vw, 1rem);
+}
+
+.keyboard .key-shift,
+.keyboard .key-alt {
+  position: absolute;
+  font-size: 0.55em;
+  line-height: 1;
+  color: var(--text-muted);
+}
+
+.keyboard .key-shift {
+  top: 0.2em;
+  right: 0.3em;
+}
+
+.keyboard .key-alt {
+  bottom: 0.2em;
+  right: 0.3em;
+}
+
+.keyboard .key.is-dead {
+  opacity: 0.6;
+}
+
+.keyboard .key[data-hand="left"][data-finger="pinky"] { --finger-bg: #dce8e1; }
+.keyboard .key[data-hand="left"][data-finger="ring"] { --finger-bg: #cfe0d6; }
+.keyboard .key[data-hand="left"][data-finger="middle"] { --finger-bg: #c2d8cb; }
+.keyboard .key[data-hand="left"][data-finger="index"] { --finger-bg: #b4cfbf; }
+.keyboard .key[data-hand="right"][data-finger="index"] { --finger-bg: #f0e3d0; }
+.keyboard .key[data-hand="right"][data-finger="middle"] { --finger-bg: #e8d6bb; }
+.keyboard .key[data-hand="right"][data-finger="ring"] { --finger-bg: #e0c8a8; }
+.keyboard .key[data-hand="right"][data-finger="pinky"] { --finger-bg: #d7bb96; }
+.keyboard .key[data-finger="thumb"] { --finger-bg: #ebeeec; }
+
+.keyboard .key.is-modifier {
+  background: #f0f1ef;
+  color: var(--text-muted);
+  font-size: clamp(0.65rem, 1.6vw, 0.85rem);
+}
+
+/* States come last so they override the finger colours. */
+
+.keyboard .key.is-mod {
+  outline: 2px dashed var(--accent-color);
+  outline-offset: -4px;
+}
+
+.keyboard .key.is-hit {
+  background: #9fcaa9;
+}
+
+.keyboard .key.is-miss {
+  background: #f2b8b1;
+  outline: 2px solid #b3261e;
+  outline-offset: -3px;
+}
+
+.keyboard .key.is-next {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #fff;
+}
+
+.keyboard .key.is-next .key-shift,
+.keyboard .key.is-next .key-alt {
+  color: #e7efe9;
+}
+
+/* Result */
+
+.result {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid var(--accent-color);
+  background: rgba(63, 94, 81, 0.05);
+}
+
+.result-title {
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.result-verdict {
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.result .stats {
+  margin-bottom: 1rem;
+}
+
+.result-hard {
+  margin-bottom: 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Responsive */
+
+@media (max-width: 959px) {
+  .typing-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  .lesson-panel {
+    order: 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .typing-page {
+    padding: 3rem 1rem 4rem;
+  }
+
+  .trainer {
+    padding: 1.25rem;
+  }
+
+  .stats,
+  .result .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .stat:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .result .stat:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--border-color);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .keyboard .key {
+    transition: background-color 0.15s ease;
+  }
+}

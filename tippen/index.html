@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tippkurs Deutsch | johannes-nirschl.tech</title>
+  <meta name="description" content="Interaktiver Tippkurs fürs Zehn-Finger-System auf der deutschen QWERTZ-Tastatur.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="css/typing.css">
+</head>
+<body>
+
+  <div class="grid-background"></div>
+
+  <nav class="navbar">
+    <div class="logo"><a href="../index.html" style="text-decoration:none; color:inherit;">johannes-nirschl<span class="tech-domain">.tech</span></a></div>
+    <div class="nav-links">
+      <a href="../about.html">About</a>
+      <a href="../index.html#projects">Log</a>
+      <a href="../contact.html">Contact</a>
+      <a href="index.html" style="color:var(--accent-color)">Tippkurs</a>
+    </div>
+  </nav>
+
+  <main class="typing-page">
+    <header class="typing-header">
+      <p class="mono-label typing-label">[ TIPPKURS · QWERTZ ]</p>
+      <h1 class="typing-title">Deutsch tippen lernen</h1>
+      <p class="typing-intro">Das Zehn-Finger-System auf der deutschen Tastatur – Lektion für Lektion, mit sofortigem Feedback. Schau möglichst auf den Text statt auf die Tasten.</p>
+      <noscript><p class="typing-intro">Dieser Tippkurs benötigt JavaScript.</p></noscript>
+    </header>
+
+    <div class="typing-layout">
+      <aside class="lesson-panel" aria-label="Lektionen">
+        <h2 class="panel-heading">Lektionen</h2>
+        <div id="lesson-list"></div>
+        <button type="button" id="reset-progress" class="text-button">Fortschritt zurücksetzen</button>
+      </aside>
+
+      <section class="trainer" aria-labelledby="lesson-title">
+        <p class="mono-label" id="lesson-module"></p>
+        <h2 class="trainer-title" id="lesson-title"></h2>
+        <p class="trainer-description" id="lesson-description"></p>
+        <p class="lesson-tip" id="lesson-tip" hidden></p>
+
+        <div class="stats" role="group" aria-label="Statistik">
+          <div class="stat"><span class="stat-label mono-label">Zeit</span><span class="stat-value" id="stat-time">0:00</span></div>
+          <div class="stat"><span class="stat-label mono-label">WPM</span><span class="stat-value" id="stat-wpm">0</span></div>
+          <div class="stat"><span class="stat-label mono-label">Genauigkeit</span><span class="stat-value" id="stat-accuracy">–</span></div>
+          <div class="stat"><span class="stat-label mono-label">Fortschritt</span><span class="stat-value" id="stat-progress">0 / 0</span></div>
+        </div>
+
+        <div class="text-panel" id="text-panel"></div>
+        <input type="text" id="typing-input" class="typing-input" aria-label="Tippfeld" aria-describedby="hint" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+        <p class="hint" id="hint" aria-live="polite"></p>
+
+        <div class="trainer-actions">
+          <button type="button" class="btn" id="restart-btn">Neu starten</button>
+        </div>
+
+        <div class="keyboard" id="keyboard" aria-hidden="true"></div>
+
+        <section class="result" id="result" role="status" hidden>
+          <h3 class="result-title">Ergebnis</h3>
+          <p class="result-verdict" id="result-verdict"></p>
+          <div class="stats">
+            <div class="stat"><span class="stat-label mono-label">WPM</span><span class="stat-value" id="result-wpm">0</span></div>
+            <div class="stat"><span class="stat-label mono-label">Genauigkeit</span><span class="stat-value" id="result-accuracy">–</span></div>
+            <div class="stat"><span class="stat-label mono-label">Fehler</span><span class="stat-value" id="result-errors">0</span></div>
+            <div class="stat"><span class="stat-label mono-label">Zeit</span><span class="stat-value" id="result-time">0:00</span></div>
+          </div>
+          <p class="result-hard">Schwierigste Tasten: <span id="result-hard">keine</span></p>
+          <div class="trainer-actions">
+            <button type="button" class="btn" id="result-retry">Nochmal</button>
+            <button type="button" class="btn btn-primary" id="result-next" hidden>Nächste Lektion</button>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="logo"><a href="../index.html" style="text-decoration:none; color:inherit;">johannes-nirschl<span class="tech-domain">.tech</span></a></div>
+      <div class="footer-links">
+        <a href="https://github.com/jojo20000-basic" target="_blank" rel="noopener">Github</a>
+        <a href="https://www.linkedin.com/in/johannes-nirschl-5ba718391" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="../copyright.html">Copyright</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/layout.js"></script>
+  <script src="js/lessons.js"></script>
+  <script src="js/course.js"></script>
+</body>
+</html>
